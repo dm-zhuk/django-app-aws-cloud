@@ -76,7 +76,7 @@ VPC, EC2-інстанси, секʼюріті-групи, RDS ми вже ств
        - **Load Balancer Type**: `Application load balancer`
      - Configure updates, monitoring, and logging
        - **Platform software**:
-         - **Environment properties**: створити всі необхідні змінні середовища по [README](https://github.com/ReshetS/django-app/blob/main/README.md)
+         - **Environment properties**: створити всі необхідні змінні середовища по [README](https://github.com/GoIT-FCC/django_app/blob/main/README.md)
    - Створити адміністратора в застосунку, залогінитись та створити опитування
 4. Намалювати схему створеного проєкту в [draw.io](https://draw.io)
 
