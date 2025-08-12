@@ -9,9 +9,9 @@ cd django-app-aws-cloud/django_app
 
 > requirements.txt містить необхідні залежності:
 
-Django==4.2.23
-psycopg2-binary==2.9.10
-gunicorn==23.0.0
+Django==4.2.23 \
+psycopg2-binary==2.9.10 \
+gunicorn==23.0.0 \
 whitenoise==6.8.2
 
 Налаштуйте django_app/settings.py:
@@ -27,26 +27,26 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles' \
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 Зберіть статичні файли:
 python3 manage.py collectstatic
 
 ### Створення Docker-образу та завантаження в ECR (Mac Terminal):
-Створіть Dockerfile:dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
-RUN python manage.py collectstatic --noinput
-EXPOSE 8000
+Створіть Dockerfile:dockerfile \
+FROM python:3.9-slim \
+WORKDIR /app \
+COPY . . \
+RUN pip install -r requirements.txt \
+RUN python manage.py collectstatic --noinput \
+EXPOSE 8000 \
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django_app.wsgi:application"]
 
 Побудуйте та завантажте образ:
-docker build --no-cache -t django-app .
-docker tag django-app:latest 381492090902.dkr.ecr.eu-central-1.amazonaws.com/django-app:latest
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 381492090902.dkr.ecr.eu-central-1.amazonaws.com
+docker build --no-cache -t django-app . \
+docker tag django-app:latest 381492090902.dkr.ecr.eu-central-1.amazonaws.com/django-app:latest \
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 381492090902.dkr.ecr.eu-central-1.amazonaws.com \
 docker push 381492090902.dkr.ecr.eu-central-1.amazonaws.com/django-app:latest
 
 ### Налаштування ECS Fargate (AWS Console, AWS CloudShell):
@@ -190,7 +190,7 @@ ECS > Clusters > fp-072025-ecs-cluster > Services > fp-task-definition-service-l
 ### Створення (Auto Scaling) політики автомасштабування:
 ECS > Clusters > fp-072025-ecs-cluster > Services > fp-task-definition-service-latest > Update Service.
 Увімкніть “Service Auto Scaling”:
-Мінімальна кількість задач: 1. | Максимальна кількість задач: 4.
+Мінімальна кількість задач: 1. | Максимальна кількість задач: 5.
 
 Додайте політику масштабування:
 Тип: Target Tracking Scaling Policy.
@@ -200,4 +200,4 @@ ECS > Clusters > fp-072025-ecs-cluster > Services > fp-task-definition-service-l
 Час розгортання: 300.
 Час згортання: 300.
 
-Причина вибору: Автомасштабування ECS на основі ECSServiceAverageCPUUtilization дозволяє динамічно додавати або видаляти задачі залежно від навантаження. Ціль 70% CPU забезпечує баланс між продуктивністю та вартістю, дозволяючи масштабувати до 4 задач при високому навантаженні та зменшувати до 1 при низькому.
+Причина вибору: Автомасштабування ECS на основі ECSServiceAverageCPUUtilization дозволяє динамічно додавати або видаляти задачі залежно від навантаження. Ціль 80% CPU забезпечує баланс між продуктивністю та вартістю, дозволяючи масштабувати до 5 задач при високому навантаженні та зменшувати до 1 при низькому.
